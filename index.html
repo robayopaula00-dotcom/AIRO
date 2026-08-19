@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIRO — Monitor de Calidad del Aire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scene">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">A</div>
+      <div>
+        <div class="brand-name">AIRO</div>
+        <div class="brand-tag">Robot sensor de calidad del aire</div>
+      </div>
+    </div>
+    <nav>
+      <span class="active">Monitor</span>
+      <span>Historial</span>
+      <span>Sensor</span>
+    </nav>
+  </header>
+
+  <main class="hero">
+
+    <div class="card robot-card">
+      <div class="robot-eyebrow">Expresión en vivo</div>
+      <div class="robot-name">¿Cómo se siente AIRO?</div>
+
+      <svg id="robotFace" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+        <rect x="45" y="70" width="210" height="190" rx="46" fill="var(--panel-2)" stroke="#28353F" stroke-width="2"/>
+        <line x1="150" y1="70" x2="150" y2="34" stroke="#28353F" stroke-width="4" stroke-linecap="round"/>
+        <circle id="antennaTip" cx="150" cy="26" r="8" fill="var(--state-color)" style="transition:fill .4s ease;"/>
+        <rect x="63" y="98" width="174" height="120" rx="26" fill="#0A0F14"/>
+        <circle id="cheekL" cx="80" cy="200" r="16" fill="var(--state-color)" opacity="0.18" style="transition:fill .4s ease;"/>
+        <circle id="cheekR" cx="220" cy="200" r="16" fill="var(--state-color)" opacity="0.18" style="transition:fill .4s ease;"/>
+        <g id="browL"><rect x="93" y="128" width="34" height="6" rx="3" fill="var(--state-color)" style="transition:fill .4s ease;"/></g>
+        <g id="browR"><rect x="173" y="128" width="34" height="6" rx="3" fill="var(--state-color)" style="transition:fill .4s ease;"/></g>
+        <circle cx="110" cy="152" r="13" fill="#E7EDF2"/>
+        <circle cx="190" cy="152" r="13" fill="#E7EDF2"/>
+        <path id="mouthPath" d="M105,192 Q150,192 195,192" fill="none" stroke="var(--state-color)" stroke-width="7" stroke-linecap="round" style="transition:stroke .4s ease;"/>
+      </svg>
+
+      <div class="status-chip">
+        <span class="dot"></span>
+        <span class="label" id="statusLabel">Buena</span>
+      </div>
+    </div>
+
+    <div class="card vitals-card">
+      <div class="vitals-header">
+        <div>
+          <div class="vitals-title">Sensor de pulso ambiental</div>
+          <div class="vitals-sub">Lectura cada 2 s</div>
+        </div>
+        <div class="vitals-sub" id="clock">00:00:00</div>
+      </div>
+
+      <div class="pulse-wrap">
+        <div class="pulse-track" id="pulseTrack">
+          <svg viewBox="0 0 300 110" preserveAspectRatio="none"><path id="pulsePathA"/></svg>
+          <svg viewBox="0 0 300 110" preserveAspectRatio="none"><path id="pulsePathB"/></svg>
+        </div>
+      </div>
+
+      <div class="reading-row">
+        <div class="reading" id="aqiReading">42<span>AQI</span></div>
+        <div class="bpm">Frecuencia<br><b id="bpmReading">62</b> lat/min</div>
+      </div>
+
+      <div class="slider-block">
+        <label class="slider-label">Simular lectura del sensor</label>
+        <input type="range" id="aqiSlider" min="0" max="300" value="42">
+      </div>
+    </div>
+
+  </main>
+
+  <div class="card mic-card">
+    <div class="mic-header">
+      <div>
+        <div class="vitals-title">Pulso por micrófono</div>
+        <div class="vitals-sub">Mide el pulso real de una persona usando el micrófono del dispositivo</div>
+      </div>
+      <button class="mic-btn" id="micBtn">
+        <span class="mic-dot"></span>
+        <span id="micBtnLabel">Activar micrófono</span>
+      </button>
+    </div>
+    <div class="mic-body">
+      <div class="mic-canvas-wrap"><canvas id="micCanvas"></canvas></div>
+      <div class="mic-stat">
+        <div class="mic-bpm" id="micBpm">--<span>lat/min</span></div>
+        <label class="mic-toggle-row">
+          <input type="checkbox" id="micDrive">
+          Usar este pulso para la expresión de AIRO
+        </label>
+        <div class="mic-hint" id="micHint">Acerca el micrófono a tu muñeca o cuello, quieto y en silencio, para captar el pulso. El sonido ambiente no sirve para medirlo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card history-card">
+    <div class="mic-header">
+      <div>
+        <div class="vitals-title">Historial de personas</div>
+        <div class="vitals-sub" id="historyCount">0/10 registros</div>
+      </div>
+      <button class="mic-btn" id="registerBtn">
+        <span class="mic-dot" id="registerDot"></span>
+        <span>Registrar persona</span>
+      </button>
+    </div>
+    <div class="history-empty" id="historyEmpty">Aún no hay personas registradas. Mide un pulso (con el micrófono o el simulador) y presiona "Registrar persona".</div>
+    <table class="history-table" id="historyTable">
+      <thead><tr><th>#</th><th>Nombre</th><th>Pulso</th><th>Estado</th><th>Hora</th></tr></thead>
+      <tbody id="historyBody"></tbody>
+    </table>
+  </div>
+
+  <section class="legend" id="legend">
+    <div class="legend-card" data-band="0">
+      <div class="legend-range">0–50 AQI</div>
+      <svg class="legend-face" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#4ADE80" stroke-width="2"/><circle cx="14" cy="17" r="2" fill="#4ADE80"/><circle cx="26" cy="17" r="2" fill="#4ADE80"/><path d="M12,24 Q20,30 28,24" fill="none" stroke="#4ADE80" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="legend-title">Buena</div>
+      <div class="legend-desc">AIRO sonríe. Aire limpio, ventilar sin restricciones.</div>
+    </div>
+    <div class="legend-card" data-band="51">
+      <div class="legend-range">51–100 AQI</div>
+      <svg class="legend-face" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#F5C84C" stroke-width="2"/><circle cx="14" cy="17" r="2" fill="#F5C84C"/><circle cx="26" cy="17" r="2" fill="#F5C84C"/><path d="M12,25 L28,25" fill="none" stroke="#F5C84C" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="legend-title">Moderada</div>
+      <div class="legend-desc">Expresión neutral. Grupos sensibles deben tener cuidado.</div>
+    </div>
+    <div class="legend-card" data-band="101">
+      <div class="legend-range">101–150 AQI</div>
+      <svg class="legend-face" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#F0996A" stroke-width="2"/><circle cx="14" cy="18" r="2" fill="#F0996A"/><circle cx="26" cy="18" r="2" fill="#F0996A"/><path d="M12,27 Q20,22 28,27" fill="none" stroke="#F0996A" stroke-width="2" stroke-linecap="round"/></svg>
+      <div class="legend-title">Dañina p/ sensibles</div>
+      <div class="legend-desc">AIRO se inquieta. Reducir actividad al aire libre prolongada.</div>
+    </div>
+    <div class="legend-card" data-band="151">
+      <div class="legend-range">151+ AQI</div>
+      <svg class="legend-face" viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#F0553A" stroke-width="2"/><circle cx="14" cy="19" r="2" fill="#F0553A"/><circle cx="26" cy="19" r="2" fill="#F0553A"/><path d="M12,29 Q20,20 28,29" fill="none" stroke="#F0553A" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <div class="legend-title">Mala</div>
+      <div class="legend-desc">AIRO se preocupa y parpadea su antena en alerta.</div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Sensor simulado · MQ-135 + ESP32 · actualización 2s</span>
+    <span>AIRO v0.1 — maqueta de diseño</span>
+  </footer>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
